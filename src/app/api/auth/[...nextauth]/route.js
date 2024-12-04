@@ -9,9 +9,8 @@ export const authOptions = {
 		}),
 	],
 	secret: process.env.JWT_SECRET,
-	pages: {
-		signIn: "/api/login", 
-	},
 };
 
-export default NextAuth(authOptions);
+const handler = NextAuth(authOptions);
+
+export { handler as GET, handler as POST };
