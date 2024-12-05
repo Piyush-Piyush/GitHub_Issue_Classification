@@ -61,13 +61,11 @@ const mockRepositories = [
 ];
 
 export default function UserDashboard() {
-
 	const [searchTerm, setSearchTerm] = useState("");
-
 
 	const { data: session } = useSession();
 	const username = session?.user?.name;
-	
+
 	// console.log(session);
 	// console.log(username);
 	const filteredRepositories = mockRepositories.filter((repo) =>
@@ -95,7 +93,7 @@ export default function UserDashboard() {
 							<TooltipTrigger asChild>
 								<Button
 									onClick={handleSignOut}
-									className="bg-white size-max text-indigo-600 hover:text-indigo-600"
+									className="bg-white size-max text-indigo-600 hover:text-indigo-400"
 								>
 									<LogOut className="h-5 w-5" />
 								</Button>
