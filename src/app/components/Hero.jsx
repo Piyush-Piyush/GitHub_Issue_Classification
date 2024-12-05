@@ -1,6 +1,6 @@
+"use client";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
-
+import { signIn } from "next-auth/react";
 export default function Hero() {
 	return (
 		<div className="relative bg-white overflow-hidden">
@@ -23,6 +23,10 @@ export default function Hero() {
 									<Link
 										href="#"
 										className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 md:py-4 md:text-lg md:px-10"
+										onClick={(e) => {
+											e.preventDefault();
+											signIn();
+										}}
 									>
 										Try for Free
 									</Link>
@@ -40,11 +44,11 @@ export default function Hero() {
 					</main>
 				</div>
 			</div>
-			<div className="lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2">
+			<div className="lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2 xl:w-1/3">
 				<img
-					className="h-56 w-full object-cover sm:h-72 md:h-96 lg:w-full lg:h-full"
-					src="/placeholder.svg?height=600&width=800"
-					alt="Developer working on a project"
+					className="h-full w-full object-contain sm:h-72 md:h-96 lg:w-full lg:h-full"
+					src="/github-fill.svg"
+					alt="GitHub Logo"
 				/>
 			</div>
 		</div>

@@ -1,4 +1,4 @@
-import { Github, Brain, LayoutDashboard, Scale, Users } from "lucide-react";
+import { Github, Brain, LayoutDashboard, Scale, Users, ChartNoAxesCombined } from "lucide-react";
 
 const features = [
 	{
@@ -29,6 +29,11 @@ const features = [
 		description: "Enable teams to better manage and track issues.",
 		icon: Users,
 	},
+	{
+		name: "Statistics",
+		description: "Get a detailed overview of your repository's performance and metrics.",
+		icon: ChartNoAxesCombined
+	}
 ];
 
 export default function Features() {

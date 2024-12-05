@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import {
 	Tooltip,
 	TooltipContent,
@@ -60,9 +61,15 @@ const mockRepositories = [
 ];
 
 export default function UserDashboard() {
-	const [searchTerm, setSearchTerm] = useState("");
-	const username = "Piyush"; // This would typically come from your auth system
 
+	const [searchTerm, setSearchTerm] = useState("");
+
+
+	const { data: session } = useSession();
+	const username = session?.user?.name;
+	
+	// console.log(session);
+	// console.log(username);
 	const filteredRepositories = mockRepositories.filter((repo) =>
 		repo.name.toLowerCase().includes(searchTerm.toLowerCase())
 	);
@@ -88,7 +95,7 @@ export default function UserDashboard() {
 							<TooltipTrigger asChild>
 								<Button
 									onClick={handleSignOut}
-									className="text-indigo-600 hover:text-indigo-700"
+									className="bg-white size-max text-indigo-600 hover:text-indigo-600"
 								>
 									<LogOut className="h-5 w-5" />
 								</Button>
