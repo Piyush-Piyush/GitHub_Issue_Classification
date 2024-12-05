@@ -3,42 +3,15 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useRouter } from "next/navigation";
+import { signOut } from "next-auth/react";
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-
-import {
-	Card,
-	CardContent,
-	CardFooter,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
-import {
-	Sidebar,
-	SidebarContent,
-	SidebarGroup,
-	SidebarGroupContent,
-	SidebarGroupLabel,
-	SidebarHeader,
-	SidebarMenu,
-	SidebarMenuButton,
-	SidebarMenuItem,
-	SidebarProvider,
-	SidebarTrigger,
-	SidebarInset,
-} from "@/components/ui/sidebar";
-import {
-	Search,
-	Star,
-	GitFork,
-	LogOut,
-	User,
-	LayoutDashboard,
-} from "lucide-react";
+import { FileSearch, Star, GitFork, LogOut } from "lucide-react";
 
 // Mock data for repositories
 const mockRepositories = [
@@ -94,124 +67,90 @@ export default function UserDashboard() {
 		repo.name.toLowerCase().includes(searchTerm.toLowerCase())
 	);
 
+	const router = useRouter();
+
+	const handleSignOut = async () => {
+		await signOut({ redirect: false });
+		router.push("/");
+	};
+
 	return (
-		<SidebarProvider>
-			<div className="w-full flex h-screen">
-				<Sidebar className="bg-indigo-700">
-					<SidebarHeader>
-						<CardTitle className="px-4 py-2 text-indigo-700">
-							GitHub Issue Manager
-						</CardTitle>
-					</SidebarHeader>
-					<SidebarContent>
-						<SidebarGroup>
-							<SidebarGroupContent>
-								<SidebarMenu>
-									<SidebarMenuItem>
-										<SidebarMenuButton asChild>
-											<a
-												href="#stats"
-												className="text-indigo-700 hover:bg-indigo-600 hover:text-white"
-											>
-												<LayoutDashboard className="mr-2 h-4 w-4" />
-												Stats
-											</a>
-										</SidebarMenuButton>
-									</SidebarMenuItem>
-									<SidebarMenuItem>
-										<SidebarMenuButton asChild>
-											<a
-												href="#profile"
-												className="text-indigo-700 hover:bg-indigo-600 hover:text-white"
-											>
-												<User className="mr-2 h-4 w-4" />
-												Profile
-											</a>
-										</SidebarMenuButton>
-									</SidebarMenuItem>
-									<SidebarMenuItem>
-										<SidebarMenuButton asChild>
-											<a
-												href="#logout"
-												className="text-indigo-700 hover:bg-indigo-600 hover:text-white"
-											>
-												<LogOut className="mr-2 h-4 w-4" />
-												Logout
-											</a>
-										</SidebarMenuButton>
-									</SidebarMenuItem>
-								</SidebarMenu>
-							</SidebarGroupContent>
-						</SidebarGroup>
-					</SidebarContent>
-				</Sidebar>
+		<div className="w-full flex h-screen">
+			{/* Content */}
+			<div className="h-full w-full bg-gray-50">
+				<header className="bg-white shadow flex justify-between items-center px-4 py-6">
+					<h1 className="text-3xl font-bold text-gray-900">
+						Welcome, <span className="text-indigo-600">{username}</span>
+					</h1>
 
-				<SidebarInset className="h-max w-full bg-gray-50">
-					<header className="bg-white shadow">
-						<div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-							<h1 className="text-3xl font-bold text-gray-900">
-								Welcome,{" "}
-								<span className="text-indigo-600">{username}</span>
-							</h1>
-							<TooltipProvider>
-								<Tooltip>
-									<TooltipTrigger asChild>
-										<SidebarTrigger className="text-indigo-600 hover:text-indigo-700" />
-									</TooltipTrigger>
-									<TooltipContent>Sidebar</TooltipContent>
-								</Tooltip>
-							</TooltipProvider>
-						</div>
-					</header>
+					<TooltipProvider>
+						<Tooltip>
+							<TooltipTrigger asChild>
+								<Button
+									onClick={handleSignOut}
+									className="text-indigo-600 hover:text-indigo-700"
+								>
+									<LogOut className="h-5 w-5" />
+								</Button>
+							</TooltipTrigger>
+							<TooltipContent>Logout</TooltipContent>
+						</Tooltip>
+					</TooltipProvider>
+				</header>
 
-					<main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-						<div className="px-4 py-6 sm:px-0">
-							<div className="mb-6">
-								<Input
-									type="text"
-									placeholder="Search repositories..."
-									value={searchTerm}
-									onChange={(e) => setSearchTerm(e.target.value)}
-									icon={<Search className="h-4 w-4 text-gray-400" />}
-									className="border-indigo-300 focus:border-indigo-500 focus:ring-indigo-500"
-								/>
+				<main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+					{/* Search Input */}
+					<div className="m-6">
+						<Input
+							type="text"
+							placeholder="Search repositories..."
+							value={searchTerm}
+							onChange={(e) => setSearchTerm(e.target.value)}
+							icon={<FileSearch />}
+							className="border-indigo-300 focus:border-indigo-500 focus:ring-indigo-500"
+						/>
+					</div>
+
+					{/* Repository Cards */}
+					<div className="m-5 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+						{filteredRepositories.map((repo) => (
+							<div
+								key={repo.id}
+								className="border rounded-lg overflow-hidden bg-white shadow-md"
+							>
+								<div className="px-4 py-3 border-b">
+									<h2 className="text-xl font-semibold text-indigo-700">
+										{repo.name}
+									</h2>
+								</div>
+								<div className="px-4 py-3">
+									<p className="text-sm text-gray-500 mb-4">
+										{repo.description}
+									</p>
+									<div className="px-4 py-2 flex justify-between text-sm text-gray-600">
+										<span className="flex items-center">
+											<Star className="h-4 w-4 mr-1 text-yellow-400" />
+											{repo.stars}
+										</span>
+										<span className="flex items-center">
+											<GitFork className="h-4 w-4 mr-1 text-indigo-400" />
+											{repo.forks}
+										</span>
+									</div>
+								</div>
+								<div className="px-4 py-3 border-t">
+									<Button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white mb-2">
+										View Issues
+									</Button>
+									<Button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white">
+										Stats
+									</Button>
+								</div>
 							</div>
-
-							<div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-								{filteredRepositories.map((repo) => (
-									<Card key={repo.id} className="border-indigo-100">
-										<CardHeader>
-											<CardTitle className="text-indigo-700">
-												{repo.name}
-											</CardTitle>
-										</CardHeader>
-										<CardContent>
-											<p className="text-sm text-gray-500 mb-4">
-												{repo.description}
-											</p>
-											<div className="flex justify-between text-sm text-gray-600">
-												<span className="flex items-center">
-													<Star className="h-4 w-4 mr-1 text-yellow-400" />
-													{repo.stars}
-												</span>
-												<span className="flex items-center">
-													<GitFork className="h-4 w-4 mr-1 text-indigo-400" />
-													{repo.forks}
-												</span>
-											</div>
-										</CardContent>
-										<CardFooter>
-											<Button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white">
-												View Issues
-											</Button>
-										</CardFooter>
-									</Card>
-								))}
-							</div>
-						</div>
-					</main>
-				</SidebarInset>
+						))}
+					</div>
+				</main>
 			</div>
-		</SidebarProvider>
+		</div>
 	);
 }
