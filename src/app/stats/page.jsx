@@ -105,7 +105,7 @@ export default function RepositoryPerformanceMetrics() {
 					<CardDescription>Distribution of issue types</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<div className="h-[200px]">
+					<div className="h-[230px]">
 						<ResponsiveContainer width="100%" height="100%">
 							<PieChart>
 								<Pie
