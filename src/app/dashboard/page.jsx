@@ -67,7 +67,7 @@ export default function UserDashboard() {
 	const username = session?.user?.name;
 
 	// console.log(session);
-	// console.log(username);
+	
 	const filteredRepositories = mockRepositories.filter((repo) =>
 		repo.name.toLowerCase().includes(searchTerm.toLowerCase())
 	);
