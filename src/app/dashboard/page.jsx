@@ -60,13 +60,16 @@ const mockRepositories = [
 	},
 ];
 
+
+  
+
 export default function UserDashboard() {
 	const [searchTerm, setSearchTerm] = useState("");
 
 	const { data: session } = useSession();
 	const username = session?.user?.name;
 
-	// console.log(session);
+	console.log(session);
 	
 	const filteredRepositories = mockRepositories.filter((repo) =>
 		repo.name.toLowerCase().includes(searchTerm.toLowerCase())

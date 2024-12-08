@@ -1,10 +1,10 @@
-import Appbar from "./components/Appbar";
-import Hero from "./components/Hero";
-import HowItWorks from "./components/HowItWorks";
-import Features from "./components/Features";
-import Benefits from "./components/Benefits";
-import Footer from "./components/Footer";
-import Redirect from "./components/Redirect";
+import Appbar from "./components/landing/Appbar";
+import Hero from "./components/landing/Hero";
+import HowItWorks from "./components/landing/HowItWorks";
+import Features from "./components/landing/Features";
+import Benefits from "./components/landing/Benefits";
+import Footer from "./components/landing/Footer";
+import Redirect from "./components/landing/Redirect";
 export default function LandingPage() {
 	return (
 		<div className="flex flex-col items-center justify-center min-h-screen py-2">
