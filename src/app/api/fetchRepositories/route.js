@@ -2,9 +2,7 @@ import { NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 
 export async function GET(req) {
-    console.log("Incoming request:", req); // todo
 	const token = await getToken({ req, secret: process.env.JWT_SECRET ?? "" });
-    console.log("Token:", token); // todo
 	if (!token || !token.accessToken) {
 		return NextResponse.json(
 			{ message: "Not logged in or no access token" },
@@ -33,7 +31,7 @@ export async function GET(req) {
 			forks: repo.forks_count,
 		}));
 
-		console.log(extractedData);
+		console.log(extractedData); // todo
 
 		return NextResponse.json(extractedData);
 	} catch (error) {
