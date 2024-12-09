@@ -60,17 +60,15 @@ const mockRepositories = [
 	},
 ];
 
-
-  
-
 export default function UserDashboard() {
 	const [searchTerm, setSearchTerm] = useState("");
 
 	const { data: session } = useSession();
 	const username = session?.user?.name;
+	const avatar = session?.user?.image;
 
 	console.log(session);
-	
+
 	const filteredRepositories = mockRepositories.filter((repo) =>
 		repo.name.toLowerCase().includes(searchTerm.toLowerCase())
 	);
@@ -87,7 +85,12 @@ export default function UserDashboard() {
 			{/* Content */}
 			<div className="h-full w-full bg-gray-50">
 				<header className="bg-white shadow flex justify-between items-center px-4 py-6">
-					<h1 className="text-3xl font-bold text-gray-900">
+					<h1 className="flex text-3xl font-bold text-gray-900">
+						<img
+							src={avatar}
+							alt="User-Avatar"
+							className="h-10 w-10 rounded-full mr-4"
+						/>
 						Welcome, <span className="text-indigo-600">{username}</span>
 					</h1>
 
