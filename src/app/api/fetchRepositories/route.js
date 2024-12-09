@@ -23,13 +23,13 @@ export async function GET(req) {
 		}
 
 		const repoData = await response.json();
-
 		const extractedData = repoData.map((repo) => ({
 			id: repo.id,
 			name: repo.name,
 			description: repo.description || "No description",
 			stars: repo.stargazers_count,
 			forks: repo.forks_count,
+			owner : repo.owner,
 		}));
 
 		return NextResponse.json(extractedData);
