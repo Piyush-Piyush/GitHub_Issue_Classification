@@ -32,8 +32,6 @@ export async function GET(req) {
 			forks: repo.forks_count,
 		}));
 
-		console.log(extractedData);
-
 		return NextResponse.json(extractedData);
 	} catch (error) {
 		return NextResponse.json(
