@@ -10,8 +10,9 @@ export const authOptions = {
 	],
 	secret: process.env.JWT_SECRET,
 	callbacks: {
-		async jwt({ token, account }) {
+		async jwt({ token, account, profile }) {
 			if (account) {
+				token.username = profile.login;
 				token.accessToken = account.access_token;
 			}
 			return token;

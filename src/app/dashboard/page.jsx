@@ -1,18 +1,18 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
-import { signOut } from "next-auth/react";
-import { useSession } from "next-auth/react";
-
+import { signOut, useSession } from "next-auth/react";
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { FileSearch, Star, GitFork, LogOut } from "lucide-react";
+import {  Star, GitFork, LogOut } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 // Fetch repositories by making api call from server
 export async function getRepo(setLoading, setRepositories) {
@@ -49,94 +49,107 @@ export default function UserDashboard() {
 		router.push("/");
 	};
 
+	if (loading) {
+		return (
+			<div className="w-full h-screen bg-gray-50 flex items-center justify-center">
+				<div className="space-y-4">
+					<Skeleton className="h-12 w-12 rounded-full" />
+					<div className="space-y-2">
+						<Skeleton className="h-4 w-[250px]" />
+						<Skeleton className="h-4 w-[200px]" />
+					</div>
+				</div>
+			</div>
+		);
+	}
+
 	return (
 		<div className="w-full flex h-screen">
-			{loading ? (
-				<div className="flex items-center justify-center w-screen h-screen">
-					<div className="animate-spin rounded-full h-32 w-32 border-t-5 border-b-2 border-gray-900"></div>
-				</div>
-			) : (
-				<div className="h-full w-full bg-gray-50">
-					<header className="bg-white shadow flex justify-between items-center px-4 py-6">
-						<h1 className="flex text-3xl font-bold text-gray-900">
-							<img
-								src={avatar}
-								alt="User-Avatar"
-								className="h-10 w-10 rounded-full mr-4"
-							/>
-							Welcome,{" "}
-							<span className="text-indigo-600">{username}</span>
-						</h1>
+			<div className="h-full w-full bg-gray-50">
+				<header className="bg-white shadow flex justify-between items-center px-4 py-6">
+					<h1 className="flex text-3xl font-bold text-gray-900">
+						<img
+							src={avatar}
+							alt="User-Avatar"
+							className="h-10 w-10 rounded-full mr-4"
+						/>
+						Welcome,{" "}
+						<span className="text-indigo-600 ml-2">{username}</span>
+					</h1>
 
-						<TooltipProvider>
-							<Tooltip>
-								<TooltipTrigger asChild>
-									<Button
-										onClick={handleSignOut}
-										className="bg-white size-max text-indigo-600 hover:text-indigo-400"
-									>
-										<LogOut className="h-5 w-5" />
-									</Button>
-								</TooltipTrigger>
-								<TooltipContent>Logout</TooltipContent>
-							</Tooltip>
-						</TooltipProvider>
-					</header>
-
-					<main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-						{/* Search Input */}
-						<div className="m-6">
-							<Input
-								type="text"
-								placeholder="Search repositories..."
-								value={searchTerm}
-								onChange={(e) => setSearchTerm(e.target.value)}
-								icon={<FileSearch />}
-								className="border-indigo-300 focus:border-indigo-500 focus:ring-indigo-500"
-							/>
-						</div>
-
-						{/* Repository Cards */}
-						<div className="m-5 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-							{filteredRepositories.map((repo) => (
-								<div
-									key={repo.id}
-									className="border rounded-lg overflow-hidden bg-white shadow-md"
+					<TooltipProvider>
+						<Tooltip>
+							<TooltipTrigger asChild>
+								<Button
+									onClick={handleSignOut}
+									variant="ghost"
+									className="text-indigo-600 hover:text-indigo-400"
 								>
-									<div className="px-4 py-3 border-b">
-										<h2 className="text-xl font-semibold text-indigo-700">
-											{repo.name}
-										</h2>
-									</div>
-									<div className="px-4 py-3">
-										<p className="text-sm text-gray-500 mb-4">
-											{repo.description}
-										</p>
-										<div className="px-4 py-2 flex justify-between text-sm text-gray-600">
-											<span className="flex items-center">
-												<Star className="h-4 w-4 mr-1 text-yellow-400" />
-												{repo.stars}
-											</span>
-											<span className="flex items-center">
-												<GitFork className="h-4 w-4 mr-1 text-indigo-400" />
-												{repo.forks}
-											</span>
-										</div>
-									</div>
-									<div className="px-4 py-3 border-t">
-										<Button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white mb-2">
-											View Issues
-										</Button>
-										<Button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white">
-											Stats
-										</Button>
+									<LogOut className="h-5 w-5" />
+								</Button>
+							</TooltipTrigger>
+							<TooltipContent>Logout</TooltipContent>
+						</Tooltip>
+					</TooltipProvider>
+				</header>
+
+				<main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+					{/* Search Input */}
+					<div className="m-6">
+						<Input
+							type="text"
+							placeholder="Search repositories..."
+							value={searchTerm}
+							onChange={(e) => setSearchTerm(e.target.value)}
+							className="border-indigo-300 focus:border-indigo-500 focus:ring-indigo-500"
+						/>
+					</div>
+
+					{/* Repository Cards */}
+					<div className="m-5 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+						{filteredRepositories.map((repo) => (
+							<div
+								key={repo.id}
+								className="border rounded-lg overflow-hidden bg-white shadow-md"
+							>
+								<div className="px-4 py-3 border-b">
+									<h2 className="text-xl font-semibold text-indigo-700">
+										{repo.name}
+									</h2>
+								</div>
+								<div className="px-4 py-3">
+									<p className="text-sm text-gray-500 mb-4">
+										{repo.description}
+									</p>
+									<div className="px-4 py-2 flex justify-between text-sm text-gray-600">
+										<span className="flex items-center">
+											<Star className="h-4 w-4 mr-1 text-yellow-400" />
+											{repo.stars}
+										</span>
+										<span className="flex items-center">
+											<GitFork className="h-4 w-4 mr-1 text-indigo-400" />
+											{repo.forks}
+										</span>
 									</div>
 								</div>
-							))}
-						</div>
-					</main>
-				</div>
-			)}
+								<div className="px-4 py-3 border-t">
+									<Button
+										className="w-full bg-indigo-600 hover:bg-indigo-700 text-white mb-2"
+										onClick={() =>
+											router.push(`/issues/${repo.name}`)
+										}
+									>
+										View Issues
+									</Button>
+									<Button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white">
+										Stats
+									</Button>
+								</div>
+							</div>
+						))}
+					</div>
+				</main>
+			</div>
 		</div>
 	);
 }

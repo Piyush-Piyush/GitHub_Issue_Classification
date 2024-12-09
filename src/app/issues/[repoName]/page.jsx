@@ -1,8 +1,8 @@
 "use client";
-
-import React from "react";
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { SquareArrowOutUpRight } from "lucide-react";
 import {
 	Card,
 	CardContent,
@@ -13,69 +13,57 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { AlertCircle, Bug, Lightbulb, HelpCircle } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
-// Mock GitHub API response
-const mockIssues = [
-	{
-		id: 1,
-		title: "App crashes on startup",
-		created_at: "2023-05-01",
-		state: "open",
-		labels: ["bug"],
-	},
-	{
-		id: 2,
-		title: "Add dark mode support",
-		created_at: "2023-05-02",
-		state: "open",
-		labels: ["enhancement"],
-	},
-	{
-		id: 3,
-		title: "How to configure API keys?",
-		created_at: "2023-05-03",
-		state: "open",
-		labels: ["question"],
-	},
-	{
-		id: 4,
-		title: "Improve error handling",
-		created_at: "2023-05-04",
-		state: "closed",
-		labels: ["bug", "good first issue"],
-	},
-	{
-		id: 5,
-		title: "Implement user authentication",
-		created_at: "2023-05-05",
-		state: "open",
-		labels: ["enhancement", "help wanted"],
-	},
-	{
-		id: 6,
-		title: "Best practices for state management?",
-		created_at: "2023-05-06",
-		state: "closed",
-		labels: ["question"],
-	},
-];
+// Use the async function for fetching issues
+async function getIssues(repoName, setLoading, setIssues) {
+	try {
+		const response = await fetch("/api/fetchIssues", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				repoName: repoName,
+			}),
+		});
+		const data = await response.json();
+		setIssues(data);
+	} catch (error) {
+		console.log("Error fetching repositories:", error);
+	} finally {
+		setLoading(false);
+	}
+}
 
 const ITEMS_PER_PAGE = 5;
 
-export default function RepositoryIssues({ params }) {
+export default function RepositoryIssues() {
+	const pathname = usePathname();
 	const [issues, setIssues] = useState([]);
+	const [loading, setLoading] = useState(true);
 	const [activeTab, setActiveTab] = useState("all");
 	const [currentPage, setCurrentPage] = useState(1);
+	const [repositoryName, setRepositoryName] = useState("");
 
-	// Unwrap params to get repoId using React.use()
-	const { repoId } = React.use(params);
+	// Extract repoName from the pathname
+	const repoName = pathname.split("/").pop();
 
 	useEffect(() => {
-		// Replace mockIssues with a real API call if required
-		console.log(`Fetching issues for repository ID: ${repoId}`);
-		setIssues(mockIssues); // Mock issues for the repo
-	}, [repoId]);
+		if (repoName) {
+			setRepositoryName(repoName);
+		}
+	}, [repoName]);
 
+	// Fetch issues when repositoryName changes
+	useEffect(() => {
+		if (repositoryName) {
+			setLoading(true);
+			getIssues(repositoryName, setLoading, setIssues);
+		}
+	}, [repositoryName]);
+
+	// Filter issues by category
 	const filterIssues = (category) => {
 		if (category === "all") return issues;
 		const labelMap = {
@@ -84,17 +72,22 @@ export default function RepositoryIssues({ params }) {
 			questions: "question",
 		};
 		return issues.filter((issue) =>
-			issue.labels.includes(labelMap[category])
+			issue.labels.some(
+				(label) => label.toLowerCase() === labelMap[category]
+			)
 		);
 	};
 
 	const filteredIssues = filterIssues(activeTab);
-	const totalPages = Math.ceil(filteredIssues.length / ITEMS_PER_PAGE);
-	const paginatedIssues = filteredIssues.slice(
-		(currentPage - 1) * ITEMS_PER_PAGE,
-		currentPage * ITEMS_PER_PAGE
-	);
+	const totalPages = Math.ceil((filteredIssues?.length || 0) / ITEMS_PER_PAGE);
+	const paginatedIssues = Array.isArray(filteredIssues)
+		? filteredIssues.slice(
+				(currentPage - 1) * ITEMS_PER_PAGE,
+				currentPage * ITEMS_PER_PAGE
+		  )
+		: [];
 
+	// Function to get category icon
 	const getCategoryIcon = (category) => {
 		switch (category) {
 			case "bugs":
@@ -108,13 +101,43 @@ export default function RepositoryIssues({ params }) {
 		}
 	};
 
+	// If loading, show skeleton
+	if (loading) {
+		return (
+			<div className="w-full flex h-screen bg-gray-50">
+				<div className="h-full w-full">
+					<header className="bg-white shadow px-4 py-6">
+						<Skeleton className="h-8 w-3/4" />
+					</header>
+					<main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+						<Skeleton className="h-10 w-full mb-4" />
+						{[1, 2, 3].map((i) => (
+							<Card key={i} className="mb-4 border-indigo-200">
+								<CardHeader>
+									<Skeleton className="h-6 w-3/4" />
+								</CardHeader>
+								<CardContent>
+									<Skeleton className="h-4 w-1/2 mb-2" />
+									<Skeleton className="h-4 w-1/4" />
+								</CardContent>
+								<CardFooter>
+									<Skeleton className="h-6 w-16" />
+								</CardFooter>
+							</Card>
+						))}
+					</main>
+				</div>
+			</div>
+		);
+	}
+
 	return (
 		<div className="w-full flex h-screen bg-gray-50">
 			<div className="h-full w-full">
 				<header className="bg-white shadow px-4 py-6">
 					<h1 className="text-3xl font-bold text-gray-900">
-						Issues for Repository ID:{" "}
-						<span className="text-indigo-600">{repoId}</span>
+						Issues for Repository:{" "}
+						<span className="text-indigo-600">{repositoryName}</span>
 					</h1>
 				</header>
 
@@ -158,9 +181,16 @@ export default function RepositoryIssues({ params }) {
 										className="mb-4 border-indigo-200"
 									>
 										<CardHeader>
-											<CardTitle className="flex items-center text-indigo-700">
+											<CardTitle className="flex items-center text-indigo-700 ">
 												{getCategoryIcon(category)}
 												<span className="ml-2">{issue.title}</span>
+												<a
+													href={issue.url}
+													target="_blank"
+													rel="noopener noreferrer"
+												>
+													<SquareArrowOutUpRight className="ml-2 h-5 w-5 text-indigo-600" />
+												</a>
 											</CardTitle>
 										</CardHeader>
 										<CardContent>
