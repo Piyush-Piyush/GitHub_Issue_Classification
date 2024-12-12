@@ -38,6 +38,12 @@ async function getIssues(repoName, setLoading, setIssues) {
 
 const ITEMS_PER_PAGE = 5;
 
+const truncateDescription = (description, maxLength = 250) => {
+	if (!description) return "No description provided.";
+	if (description.length <= maxLength) return description;
+	return description.slice(0, maxLength).trim() + "...";
+};
+
 export default function RepositoryIssues() {
 	const pathname = usePathname();
 	const [issues, setIssues] = useState([]);
@@ -68,7 +74,7 @@ export default function RepositoryIssues() {
 		if (category === "all") return issues;
 		const labelMap = {
 			bugs: "bug",
-			features: "enhancement",
+			features: "feature",
 			questions: "question",
 		};
 		return issues.filter((issue) =>
@@ -211,6 +217,12 @@ export default function RepositoryIssues() {
 													</Badge>
 												))}
 											</div>
+											<p className="mt-2 text-sm text-gray-600">
+												{truncateDescription(
+													issue.description ||
+														"No description provided."
+												)}
+											</p>
 										</CardContent>
 										<CardFooter>
 											<Badge
