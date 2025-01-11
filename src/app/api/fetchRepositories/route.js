@@ -31,7 +31,7 @@ export async function GET(req) {
 			forks: repo.forks_count,
 			owner : repo.owner,
 		}));
-
+		
 		return NextResponse.json(extractedData);
 	} catch (error) {
 		return NextResponse.json(

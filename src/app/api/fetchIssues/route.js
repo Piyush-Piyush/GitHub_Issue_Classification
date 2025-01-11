@@ -81,6 +81,7 @@ export async function POST(req) {
 
 		// Fetch labeled issues from FastAPI
 		const labeledIssues = await fetchLabeledIssues(extractedIssues);
+		// console.log("Labeled issues:", labeledIssues);
 		return NextResponse.json(labeledIssues);
 	} catch (error) {
 		console.error("Error while fetching issues:", error.message);

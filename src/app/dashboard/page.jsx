@@ -11,7 +11,7 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import {  Star, GitFork, LogOut } from "lucide-react";
+import { Star, GitFork, LogOut } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 // Fetch repositories by making api call from server
@@ -141,7 +141,10 @@ export default function UserDashboard() {
 									>
 										View Issues
 									</Button>
-									<Button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white">
+									<Button
+										className="w-full bg-indigo-600 hover:bg-indigo-700 text-white"
+										onClick={() => router.push(`/stats/${repo.name}`)}
+									>
 										Stats
 									</Button>
 								</div>
