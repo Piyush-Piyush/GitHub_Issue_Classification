@@ -85,7 +85,7 @@ export default function RepositoryPerformanceMetrics() {
 
 	if (isLoading) {
 		return (
-			<div className="flex justify-center items-center h-64">
+			<div className="flex justify-center items-center h-[calc(100vh-150px)]">
 				<Spinner />
 				<span>Loading issues...</span>
 			</div>
@@ -141,7 +141,7 @@ export default function RepositoryPerformanceMetrics() {
 	}));
 
 	return (
-		<div className="m-4 grid gap-5 md:grid-cols-2 lg:grid-cols-1">
+		<div className="m-4 grid gap-5">
 			<Card>
 				<CardHeader>
 					<CardTitle>Issue Label Breakdown</CardTitle>
@@ -150,14 +150,14 @@ export default function RepositoryPerformanceMetrics() {
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<div className="h-[230px]">
+					<div className="w-full h-[calc(100vh-200px)]">
 						<ResponsiveContainer width="100%" height="100%">
 							<PieChart>
 								<Pie
 									data={chartData}
 									cx="50%"
 									cy="50%"
-									outerRadius={80}
+									outerRadius="60%"
 									fill="#8884d8"
 									dataKey="value"
 									label={({ name, percent }) =>
