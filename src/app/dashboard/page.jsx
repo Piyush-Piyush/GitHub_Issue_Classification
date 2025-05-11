@@ -11,7 +11,7 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import {  Star, GitFork, LogOut } from "lucide-react";
+import { Star, GitFork, LogOut } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 // Fetch repositories by making api call from server
@@ -35,6 +35,7 @@ export default function UserDashboard() {
 	const username = session?.user?.name;
 	const avatar = session?.user?.image;
 	const router = useRouter();
+	const [publicRepositoryName, setPublicRepositoryName] = useState("");
 
 	useEffect(() => {
 		getRepo(setLoading, setRepositories);
@@ -47,6 +48,13 @@ export default function UserDashboard() {
 	const handleSignOut = async () => {
 		await signOut({ redirect: false });
 		router.push("/");
+	};
+
+	const	handleSearchPublicRepo = async (e) => {
+		e.preventDefault()
+    if (searchTerm.trim()) {
+      router.push(`/repositories?q=${encodeURIComponent(searchTerm)}`)
+    }
 	};
 
 	if (loading) {
@@ -94,6 +102,34 @@ export default function UserDashboard() {
 				</header>
 
 				<main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+					{/* Search public repositories on GitHub to get started. */}
+					<div className="m-5 border rounded-lg border-gray-200 p-6">
+						<h1 className="text-2xl font-bold text-gray-900">
+							Want to search public repositories
+						</h1>
+						<p className="mt-2 text-gray-500">
+							Enter repository name to find public repositories, and get
+							classified issues.
+						</p>
+						<form onSubmit={handleSearchPublicRepo} className="mt-4">
+							<div className="flex items-center gap-4 flex-col sm:flex-row">
+								<Input
+									type="text"
+									placeholder="Search repositories..."
+									value={publicRepositoryName}
+									onChange={(e) => setPublicRepositoryName(e.target.value)}
+									className="border-indigo-300 focus:border-indigo-500 focus:ring-indigo-500"
+								/>
+								<Button
+									type="submit"
+									className="w-full sm:w-1/3 bg-indigo-600 hover:bg-indigo-700 text-white"
+								>
+									Search
+								</Button>
+							</div>
+						</form>
+					</div>
+
 					{/* Search Input */}
 					<div className="m-6">
 						<Input
@@ -106,7 +142,7 @@ export default function UserDashboard() {
 					</div>
 
 					{/* Repository Cards */}
-					<div className="m-5 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+					<div className="m-5 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 ">
 						{filteredRepositories.map((repo) => (
 							<div
 								key={repo.id}

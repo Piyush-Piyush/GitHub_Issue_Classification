@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 
-
 export default function Appbar() {
 	const scrollToSection = (sectionId) => {
 		const section = document.getElementById(sectionId);
@@ -27,7 +26,7 @@ export default function Appbar() {
 				<div className="flex justify-between items-center py-4 md:justify-start md:space-x-10">
 					<div className="flex justify-start lg:w-0 lg:flex-1">
 						<Link href="/">
-							<span className="sr-only">Your Company</span>
+							<span className="sr-only">GitClassify</span>
 							<Github className="h-8 w-auto sm:h-10" />
 						</Link>
 					</div>

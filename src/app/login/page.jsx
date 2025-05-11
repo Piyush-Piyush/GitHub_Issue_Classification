@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { GithubIcon } from "lucide-react";
 
 export default function AuthPage() {
+
   const { data: session } = useSession();
   const [isClient, setIsClient] = useState(false); // Track client-side rendering
   // const router = useRouter(); // Initialize the router
@@ -18,8 +19,8 @@ export default function AuthPage() {
 
   useEffect(() => {
     if (session) {
-      // Redirect to the dashboard (or any page you want) after login
-      router.push('/dashboard'); // Replace with your target page
+      // Redirect to the dashboard after login
+      router.push('/dashboard'); 
     }
   }, [session, router]); // Dependency on session
 
